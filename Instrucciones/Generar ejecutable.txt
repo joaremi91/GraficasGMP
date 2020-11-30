@@ -1,0 +1,2 @@
+pip install pyinstaller					Instala la librería
+pyinstaller --onefile -w GraficasGMP.py			Ejecuta el comando para convertir el .py en .exe	

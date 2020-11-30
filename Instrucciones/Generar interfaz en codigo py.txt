@@ -1,0 +1,7 @@
+Cuando se termina el diseño en Qt Designer y se guardan los datos
+el archivo generado tiene formato .ui
+Para que se pueda trabajar con él desde python hay que transformarlo a .py
+abriendo la consola de comandos desde la ruta donde esté el archivo .ui
+se ejecuta el siguiente comando:
+
+pyuic5 -x interfaz.ui -o interfaz.py

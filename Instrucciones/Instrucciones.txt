@@ -1,0 +1,6 @@
+1º Generamos la interfaz gráfica con Qt Designer
+	- En caso de haber imágenes o iconos en la interfaz, se deben convertir a .py
+2º Convertimos la interfaz gráfica en código .py
+3º Separamos el código de la interfaz gráfica de la parte lógica del programa, para ello creamos un script con formato .py donde importamos el archivo de la interfaz en .py
+4º En el script creado para la parte lógica, creamos las instrucciones para el programa
+5º Generamos el ejecutable

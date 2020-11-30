@@ -1,0 +1,4 @@
+The current Numpy installation fails to pass a sanity check due to a bug in the windows runtime. 
+See this issue for more information: https://tinyurl.com/y3dm3h86
+
+pip install numpy==1.19.3

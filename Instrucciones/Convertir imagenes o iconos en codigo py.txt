@@ -1,0 +1,6 @@
+https://www.programmersought.com/article/1463797011/
+
+Abrir cmd en la ruta del icono o imagen
+
+pyrcc5 -o imagen.py imagen.qrc
+pyrcc5 -o icono.py icono.qrc
