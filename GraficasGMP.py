@@ -28,8 +28,8 @@ class MainWindow( QtWidgets.QMainWindow, Ui_MainWindow ):
         self.pushButton_cambiar.clicked.connect(self.funcion_Modificar)
         self.pushButton_generar_grafica.clicked.connect(self.funcion_Generar_Grafica)
 
-        self.pushButton_generar_grafica.setStyleSheet("background-color: gray")
         self.pushButton_generar_grafica.setEnabled(False)
+        self.pushButton_generar_grafica.setStyleSheet("background-color: rgb(204, 204, 204); color: rgb(135, 135, 163);")
 
     # Modifica la ruta de entrada del fichero y lo carga en una variable
     def funcion_Abrir( self ):
