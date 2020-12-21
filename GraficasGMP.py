@@ -10,12 +10,16 @@ import numpy as np
 import matplotlib.pyplot as plt
 import math
 
-class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
+class MainWindow( QtWidgets.QMainWindow, Ui_MainWindow ):
 
-    datos = ''
-    carpeta_destino = ''
+    datos = None
+    carpeta_destino = None
+    calidad = 108
+    boolean_carpeta = False
+    boolean_datos = False
 
-    def __init__(self, *args, **kwargs):
+    def __init__( self, *args, **kwargs ):
+
         QtWidgets.QMainWindow.__init__(self, *args, **kwargs)
         self.setupUi(self)
 
@@ -24,35 +28,75 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
         self.pushButton_cambiar.clicked.connect(self.funcion_Modificar)
         self.pushButton_generar_grafica.clicked.connect(self.funcion_Generar_Grafica)
 
+        self.pushButton_generar_grafica.setStyleSheet("background-color: gray")
+        self.pushButton_generar_grafica.setEnabled(False)
+
     # Modifica la ruta de entrada del fichero y lo carga en una variable
-    def funcion_Abrir(self):
-        
+    def funcion_Abrir( self ):
+
         options = QFileDialog.Options()
         options |= QFileDialog.DontUseNativeDialog
-        fileName, _ = QFileDialog.getOpenFileName(self,"Abrir ensayo", "","Documentos de texto (*.txt)", options=options)
+        self.datos, _ = QFileDialog.getOpenFileName( self, "Abrir ensayo", "", "Documentos de texto (*.txt)", options = options)
         
-        if fileName:
-            self.textBrowser_ruta_entrada.setText(fileName)
-            self.datos = fileName
-            self.datos = pd.read_csv(self.datos,sep="\t")
-        return self.datos
+        if self.datos:
+
+            self.textBrowser_ruta_entrada.setText( self.datos )
+            self.datos = pd.read_csv( self.datos, sep = "\t" )
+            self.boolean_datos = True
+
+            if self.boolean_carpeta is True:
+                self.pushButton_generar_grafica.setStyleSheet("background-color: rgb(0, 16, 103); color: rgb(255, 255, 255);")
+                self.pushButton_generar_grafica.setEnabled(True)
+
+            return self.datos
+
+        else:
+
+            print( "self.datos vacío: " + self.datos )
 
     # Modifica la ruta de destino, se puede añadir una ruta por defecto en caso de no modificarse
-    def funcion_Modificar(self):
-        self.carpeta_destino = str(QFileDialog.getExistingDirectory(self, "Guardar en"))
-        self.textBrowser_ruta_salida.setText(str(self.carpeta_destino))  
-        return self.carpeta_destino
+    def funcion_Modificar( self ):
+
+        self.carpeta_destino = str( QFileDialog.getExistingDirectory( self, "Guardar en" ) )
+        
+        if self.carpeta_destino:
+
+            self.textBrowser_ruta_salida.setText( str( self.carpeta_destino ) )
+            self.boolean_carpeta = True
+
+            if self.boolean_datos is True:
+
+                self.pushButton_generar_grafica.setStyleSheet("background-color: rgb(0, 16, 103); color: rgb(255, 255, 255);")
+                self.pushButton_generar_grafica.setEnabled(True)
+
+            return self.carpeta_destino
+
+        else: 
+            
+            print("self.carpeta_destino vacía: " + self.carpeta_destino)
     
     # Genera el informe y lo guarda en la ruta de destino
-    def funcion_Generar_Grafica(self):
+    def funcion_Generar_Grafica( self ):
         
+        def Mensaje( self, Color, Mensaje ):
+
+            if Color == 'red':
+                self.label_mensajes.setStyleSheet('color: red')
+            elif Color == 'green':
+                self.label_mensajes.setStyleSheet('color: green')
+            elif Color == 'blue':
+                self.label_mensajes.setStyleSheet('color: blue')
+            else:
+                self.label_mensajes.setStyleSheet('color: black')
+            
+            self.label_mensajes.setText( Mensaje )            
+
         # Lee la selección del menú desplegable
+        Mensaje( self, "", "")
         Seleccion = self.comboBox_desplegable_graficas.currentIndex()
-
+       
         # Genera la gráfica de Conexión/Desconexión de los ventiladores
-        def Conexion_Desconexion_Ventiladores(self):
-
-            self.label_mensajes.setText("Gráfica Conexión-Desconexión ventiladores generado con éxito")
+        def Conexion_Desconexion_Ventiladores( self ):
 
             # Asigna las variables del documento .txt a las variables python
             Ventilador1 = self.datos['VENTILADOR1']
@@ -155,14 +199,14 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
 
             plt.tight_layout()
             ruta = self.carpeta_destino + '/' + 'Ventilador_graf.png'
-            plt.savefig( ruta, dpi = 1080 )
+            plt.savefig( ruta, dpi = self.calidad )
             plt.close( Ventilador_graf )
+
+            Mensaje(self, "green", "Gráfica de Conexión/Desconexión de ventiladores generada con éxito.")
  
         # Genera la gráfica de Conexión/Desconexión del Kidk-Down
-        def Conexion_Desconexion_KickDown(self):
+        def Conexion_Desconexion_KickDown( self ):
             
-            self.label_mensajes.setText("Gráfica Kick-Down generado con éxito")
-
             # Asigna las variables del documento .txt a las variables python
             KICK_DOWN1 = self.datos['KICK-DOWN1']
             KICK_DOWN2 = self.datos['KICK-DOWN2']
@@ -254,14 +298,14 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
 
             #plt.tight_layout()
             ruta = self.carpeta_destino + '/' + 'Kick_down_graf.png'
-            plt.savefig( ruta, dpi = 1080 )
+            plt.savefig( ruta, dpi = self.calidad )
             plt.close( Kic_down_graf )
 
-        # Genera la gráfica de Pérdida de potencia en función de la temperatura
-        def Perdida_Potencia_Temperatura(self):
-            
-            self.label_mensajes.setText("Gráfica Par/Potencia generado con éxito")
+            Mensaje(self, "green", "Gráfica de Conexión/Desconexión del Kick-Down generada con éxito.")
 
+        # Genera la gráfica de Pérdida de potencia en función de la temperatura
+        def Perdida_Potencia_Temperatura( self ):
+            
             KICK_DOWN2 = self.datos['KICK-DOWN2']
             Potencia = self.datos['Potencia']
             Fases = self.datos['Pattern Phase']
@@ -327,12 +371,13 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
             Perdida_potencia.suptitle('Pérdida de potencia', fontsize=16)
             
             ruta = self.carpeta_destino + '/' + 'Perdida_Potencia.png'
-            plt.savefig( ruta, dpi = 1080 )
+            plt.savefig( ruta, dpi = self.calidad )
             plt.close(Perdida_potencia)
         
+            Mensaje(self, "green", "Gráfica de Pérdida de potencia por temperatura generada con éxito.")
+
         # Genera la gráfica de Desconexión a 1200 rpm
-        def Desconexion_1200rpm(self):
-            self.label_mensajes.setText("Gráfica Pérdida de potencia generado con éxito")
+        def Desconexion_1200rpm( self ):
 
             KICK_DOWN1 = self.datos['KICK-DOWN1']
             Revoluciones = self.datos['Revoluciones']
@@ -378,12 +423,13 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
             plt.grid(True)
 
             ruta = self.carpeta_destino + '/' + 'Des_1200_graf.png'
-            plt.savefig( ruta, dpi = 1080 )
+            plt.savefig( ruta, dpi = self.calidad )
             plt.close(Des_1200_graf)
+
+            Mensaje( self, "green", "Gráfica de Desconexión a 1200rpm generada con éxito." )
             
         # Genera la gráfica de Desconexión a 1400 rpm
-        def Desconexion_1400rpm(self):
-            self.label_mensajes.setText("Gráfica Pérdida de potencia generado con éxito")
+        def Desconexion_1400rpm( self ):
             
             Revoluciones = self.datos['Revoluciones']
             Ventilador1 = self.datos['VENTILADOR1']
@@ -432,11 +478,13 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
 
             plt.grid(True)
             ruta = self.carpeta_destino + '/' + 'Des_1400_graf.png'
-            plt.savefig( ruta, dpi = 1080 )
+            plt.savefig( ruta, dpi = self.calidad )
             plt.close(Des_1400_graf)
+
+            Mensaje(self, "green", "Gráfica de Desconexión a 1400rpm generada con éxito." )
         
         # Genera la gráfica de la prueba del regulador
-        def Prueba_Regulador(self):
+        def Prueba_Regulador( self ):
 
             Fases = self.datos['Pattern Phase']
             Potencia= self.datos['Potencia']
@@ -493,21 +541,21 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
 
             host.legend(lines, [l.get_label() for l in lines],loc='center right')
             ruta = self.carpeta_destino + '/' + 'Regulador_2680.png'
-            plt.savefig( ruta, dpi = 1080 )
-            #plt.show()
+            plt.savefig( ruta, dpi = self.calidad )
             
-            self.label_mensajes.setText("La gráfica del regulador se han generado con éxito")
+            Mensaje(self, "green", "Gráfica del regulador generado con éxito.")
 
-        def Completo(self):
+        # Genera el informe completo
+        def Completo( self ):
 
-            Conexion_Desconexion_Ventiladores(self)
-            Conexion_Desconexion_KickDown(self)
-            Perdida_Potencia_Temperatura(self)
-            Desconexion_1200rpm(self)
-            Desconexion_1400rpm(self)
-            Prueba_Regulador(self)
+            Conexion_Desconexion_Ventiladores( self )
+            Conexion_Desconexion_KickDown( self )
+            Perdida_Potencia_Temperatura( self )
+            Desconexion_1200rpm( self )
+            Desconexion_1400rpm( self )
+            Prueba_Regulador( self )
             
-            self.label_mensajes.setText("Todas las gráficas se han generado con éxito")
+            Mensaje( self, "green", "Informe completo generado con éxito." )
 
         # Si se añade algun tipo de gráfica más, se debe añadir un elif en este bloque con el nombre
         # de la nueva función que realiza la gráfica y asignarle un número al desplegable continuando el orden.

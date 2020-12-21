@@ -11,6 +11,7 @@ Estas instrucciones te permitirán obtener una copia del proyecto en funcionamie
 Este software no necesita instalación, simplemente descargue el repositorio y ejecute el archivo GraficasGMP.exe
 
 Para clonar este repositorio instale el software de Git en su ordenador https://git-scm.com/
+
 Necesitará una cuenta en la página GitHub https://github.com/
 
 ## Construido con 🛠️
