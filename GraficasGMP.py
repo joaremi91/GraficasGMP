@@ -4,7 +4,7 @@ from PyQt5.QtWidgets import QFileDialog, QComboBox
 from PyQt5 import QtGui
 import os
 
-# Librerías importadas por Joan
+# Librerías importadas por Joan Requena
 import pandas as pd 
 import numpy as np
 import matplotlib.pyplot as plt
